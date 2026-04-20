@@ -14,9 +14,18 @@ class DomainController extends Controller
      */
     public function index(): JsonResponse
     {
+        $this->authorize('viewAny', Domain::class);
+
+        $user = auth()->user();
+        $query = Domain::query();
+
+        if (!$user->isSuperAdmin()) {
+            $query->where('branch_id', $user->branch_id);
+        }
+
         return response()->json([
             'success' => true,
-            'data' => Domain::all(),
+            'data' => $query->get(),
         ]);
     }
 
@@ -25,7 +34,16 @@ class DomainController extends Controller
      */
     public function store(StoreDomainRequest $request): JsonResponse
     {
-        $domain = Domain::create($request->validated());
+        $this->authorize('create', Domain::class);
+
+        $user = auth()->user();
+        $data = $request->validated();
+        
+        if (!$user->isSuperAdmin()) {
+            $data['branch_id'] = $user->branch_id;
+        }
+
+        $domain = Domain::create($data);
 
         return response()->json([
             'success' => true,
@@ -39,6 +57,8 @@ class DomainController extends Controller
      */
     public function show(Domain $domain): JsonResponse
     {
+        $this->authorize('view', $domain);
+
         return response()->json([
             'success' => true,
             'data' => $domain,
@@ -50,6 +70,8 @@ class DomainController extends Controller
      */
     public function update(UpdateDomainRequest $request, Domain $domain): JsonResponse
     {
+        $this->authorize('update', $domain);
+
         $domain->update($request->validated());
 
         return response()->json([
@@ -64,6 +86,8 @@ class DomainController extends Controller
      */
     public function destroy(Domain $domain): JsonResponse
     {
+        $this->authorize('delete', $domain);
+
         $domain->delete();
 
         return response()->json([

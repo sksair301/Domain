@@ -11,6 +11,7 @@ class Domain extends Model
         'name',
         'booking_date',
         'expiry_date',
-        'branch',
+        'sales_person_name',
+        'branch_id',
     ];
 }

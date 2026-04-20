@@ -26,7 +26,8 @@ class StoreDomainRequest extends FormRequest
             'name' => 'required|string|max:255',
             'booking_date' => 'required|date',
             'expiry_date' => 'required|date|after_or_equal:booking_date',
-            'branch' => 'required|string|max:255',
+            'sales_person_name' => 'required|string|max:255',
+            'branch_id' => 'required|exists:branches,id',
         ];
     }
 }
