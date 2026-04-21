@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Domain;
+use App\Models\Manager;
+use App\Models\Employee;
+use App\Models\Status;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
@@ -17,6 +20,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Status::create(['name' => 'Active']);
+        Status::create(['name' => 'Expiring']);
+        Status::create(['name' => 'Expire']);
+
         $this->call([
             BranchSeeder::class,
         ]);
@@ -28,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'superadmin',
         ]);
 
-        User::create([
+        $managerUser = User::create([
             'name' => 'Ahmedabad Manager',
             'email' => 'manager@example.com',
             'password' => Hash::make('password'),
@@ -36,11 +43,27 @@ class DatabaseSeeder extends Seeder
             'branch_id' => 1,
         ]);
 
-        User::create([
+        Manager::create([
+            'user_id' => $managerUser->id,
+            'name' => $managerUser->name,
+            'email' => $managerUser->email,
+            'phone_number' => '1234567890',
+            'branch_id' => 1,
+        ]);
+
+        $employeeUser = User::create([
             'name' => 'Ahmedabad Employee',
             'email' => 'employee@example.com',
             'password' => Hash::make('password'),
             'role' => 'employee',
+            'branch_id' => 1,
+        ]);
+
+        Employee::create([
+            'user_id' => $employeeUser->id,
+            'name' => $employeeUser->name,
+            'email' => $employeeUser->email,
+            'phone_number' => '0987654321',
             'branch_id' => 1,
         ]);
 

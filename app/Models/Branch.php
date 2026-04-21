@@ -11,4 +11,14 @@ class Branch extends Model
     use HasFactory;
 
     protected $fillable = ['name'];
+
+    public function managers()
+    {
+        return $this->hasMany(Manager::class);
+    }
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
+    }
 }

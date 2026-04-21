@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Domain;
+use App\Models\Status;
 use App\Http\Requests\StoreDomainRequest;
 use App\Http\Requests\UpdateDomainRequest;
 use Illuminate\Http\JsonResponse;
@@ -41,6 +42,12 @@ class DomainController extends Controller
         
         if (!$user->isSuperAdmin()) {
             $data['branch_id'] = $user->branch_id;
+        }
+
+        // Set default status to 'Active'
+        $activeStatus = Status::where('name', 'Active')->first();
+        if ($activeStatus) {
+            $data['status_id'] = $activeStatus->id;
         }
 
         $domain = Domain::create($data);

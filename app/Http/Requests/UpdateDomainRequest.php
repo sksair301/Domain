@@ -24,10 +24,12 @@ class UpdateDomainRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|required|string|max:255',
+            'company_name' => 'sometimes|nullable|string|max:255',
             'booking_date' => 'sometimes|required|date',
             'expiry_date' => 'sometimes|required|date|after_or_equal:booking_date',
             'sales_person_name' => 'sometimes|required|string|max:255',
             'branch_id' => 'sometimes|required|exists:branches,id',
+            'status_id' => 'sometimes|nullable|exists:statuses,id',
         ];
     }
 }

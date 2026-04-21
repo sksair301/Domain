@@ -24,6 +24,7 @@ class StoreDomainRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
             'booking_date' => 'required|date',
             'expiry_date' => 'required|date|after_or_equal:booking_date',
             'sales_person_name' => 'required|string|max:255',

@@ -32,6 +32,16 @@ class User extends Authenticatable
         return $this->belongsTo(Branch::class);
     }
 
+    public function manager()
+    {
+        return $this->hasOne(Manager::class);
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+
     public function isSuperAdmin()
     {
         return $this->role === 'superadmin';

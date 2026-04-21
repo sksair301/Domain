@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "067f8727-51a8-44e6-be13-b222e2e41c58",
-		"name": "Domain API (RBAC)",
-		"description": "API collection for Domain Management with Role-Based Access Control.\n\n### Roles:\n- **Superadmin**: admin@example.com / password\n- **Manager**: manager@example.com / password\n- **Employee**: employee@example.com / password",
+		"name": "Domain API (RBAC & Status)",
+		"description": "API collection for Domain Management with Role-Based Access Control and Automated Expiry Statuses.\n\n### Roles:\n- **Superadmin**: admin@example.com / password\n- **Manager**: manager@example.com / password\n- **Employee**: employee@example.com / password\n\n### Statuses:\n1. Active\n2. Expiring (Auto-updated at 30, 15, 7 days)\n3. Expire (Auto-updated when date passed)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -139,7 +139,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"rbac-domain.com\",\n    \"booking_date\": \"2026-04-20\",\n    \"expiry_date\": \"2027-04-20\",\n    \"sales_person_name\": \"John Doe\"\n}",
+							"raw": "{\n    \"name\": \"google.com\",\n    \"company_name\": \"Alphabet Inc.\",\n    \"booking_date\": \"2024-01-01\",\n    \"expiry_date\": \"2025-01-01\",\n    \"sales_person_name\": \"John Doe\",\n    \"branch_id\": 1\n}",
 							"options": { "raw": { "language": "json" } }
 						},
 						"url": {
@@ -165,7 +165,7 @@
 					}
 				},
 				{
-					"name": "Update Domain (Manager/Admin)",
+					"name": "Update Domain",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -174,7 +174,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"updated-rbac.com\",\n    \"sales_person_name\": \"Jane Doe\"\n}",
+							"raw": "{\n    \"company_name\": \"Google Cloud\",\n    \"status_id\": 1\n}",
 							"options": { "raw": { "language": "json" } }
 						},
 						"url": {
@@ -185,7 +185,7 @@
 					}
 				},
 				{
-					"name": "Delete Domain (Manager/Admin)",
+					"name": "Delete Domain",
 					"request": {
 						"method": "DELETE",
 						"header": [
