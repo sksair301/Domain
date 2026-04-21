@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Domain;
 use App\Models\Status;
 use App\Http\Requests\StoreDomainRequest;
@@ -15,18 +16,11 @@ class DomainController extends Controller
      */
     public function index(): JsonResponse
     {
-        $this->authorize('viewAny', Domain::class);
-
-        $user = auth()->user();
-        $query = Domain::query();
-
-        if (!$user->isSuperAdmin()) {
-            $query->where('branch_id', $user->branch_id);
-        }
+        $domains = Domain::with(['branch', 'status'])->get();
 
         return response()->json([
             'success' => true,
-            'data' => $query->get(),
+            'data' => $domains
         ]);
     }
 
@@ -35,21 +29,14 @@ class DomainController extends Controller
      */
     public function store(StoreDomainRequest $request): JsonResponse
     {
-        $this->authorize('create', Domain::class);
-
-        $user = auth()->user();
         $data = $request->validated();
-        
-        if (!$user->isSuperAdmin()) {
-            $data['branch_id'] = $user->branch_id;
-        }
 
         $domain = Domain::create($data);
 
         return response()->json([
             'success' => true,
             'message' => 'Domain created successfully',
-            'data' => $domain,
+            'data' => $domain->load(['branch', 'status'])
         ], 201);
     }
 
@@ -58,11 +45,9 @@ class DomainController extends Controller
      */
     public function show(Domain $domain): JsonResponse
     {
-        $this->authorize('view', $domain);
-
         return response()->json([
             'success' => true,
-            'data' => $domain,
+            'data' => $domain->load(['branch', 'status'])
         ]);
     }
 
@@ -71,14 +56,12 @@ class DomainController extends Controller
      */
     public function update(UpdateDomainRequest $request, Domain $domain): JsonResponse
     {
-        $this->authorize('update', $domain);
-
         $domain->update($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Domain updated successfully',
-            'data' => $domain,
+            'data' => $domain->load(['branch', 'status'])
         ]);
     }
 
@@ -87,13 +70,11 @@ class DomainController extends Controller
      */
     public function destroy(Domain $domain): JsonResponse
     {
-        $this->authorize('delete', $domain);
-
         $domain->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Domain deleted successfully',
+            'message' => 'Domain deleted successfully'
         ]);
     }
 }

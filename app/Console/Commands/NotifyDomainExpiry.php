@@ -32,32 +32,41 @@ class NotifyDomainExpiry extends Command
     public function handle()
     {
         $today = Carbon::today();
-        
-        // Fetch statuses
-        $activeStatus = Status::where('name', 'Active')->first();
-        $expiringStatus = Status::where('name', 'Expiring')->first();
-        $expiredStatus = Status::where('name', 'Expire')->first();
 
-        // 1. Mark Expired Domains
+        // Fetch statuses
+        $activeStatus   = Status::where('name', 'Active')->first();
+        $expiringStatus = Status::where('name', 'Expiring')->first();
+        $expiredStatus  = Status::where('name', 'Expire')->first();
+
+        // 1. Mark Expired: expiry_date < today
         Domain::where('expiry_date', '<', $today->toDateString())
             ->update(['status_id' => $expiredStatus->id]);
 
+        // 2. Mark Expiring: today <= expiry_date <= today + 30 days
+        Domain::whereBetween('expiry_date', [
+            $today->toDateString(),
+            $today->copy()->addDays(30)->toDateString(),
+        ])->update(['status_id' => $expiringStatus->id]);
+
+        // 3. Mark Active: expiry_date > today + 30 days
+        Domain::where('expiry_date', '>', $today->copy()->addDays(30)->toDateString())
+            ->update(['status_id' => $activeStatus->id]);
+
+        $this->info('Domain statuses updated.');
+
+        // 4. Send email notifications for domains expiring in 30, 15, and 7 days
         $intervals = [30, 15, 7];
 
         foreach ($intervals as $days) {
             $expiryDate = $today->copy()->addDays($days)->toDateString();
-            
             $domains = Domain::where('expiry_date', $expiryDate)->get();
 
             if ($domains->isEmpty()) {
-                $this->info("No domains expiring in {$days} days.");
+                $this->info("No domains expiring in exactly {$days} days.");
                 continue;
             }
 
             foreach ($domains as $domain) {
-                // Update status to Expiring
-                $domain->update(['status_id' => $expiringStatus->id]);
-
                 $branch = $domain->branch;
                 if (!$branch) continue;
 
@@ -69,20 +78,10 @@ class NotifyDomainExpiry extends Command
 
                 if (!empty($recipientList)) {
                     Mail::to($recipientList)->send(new DomainExpiryReminder($domain, $days));
-                    $this->info("Sent {$days}-day expiry reminder and updated status for {$domain->name}");
+                    $this->info("Sent {$days}-day expiry reminder for {$domain->name}");
                 }
             }
         }
-
-        // 2. Ensure everything else is Active (if not Expiring or Expired)
-        // This is a simple cleanup for domains that were previously Expiring but are no longer in the 30/15/7 window 
-        // OR domains that were renewed.
-        // For simplicity, we just mark everything >= today and not in expiring window as Active.
-        $expiringDates = collect($intervals)->map(fn($d) => $today->copy()->addDays($d)->toDateString())->toArray();
-        
-        Domain::where('expiry_date', '>=', $today->toDateString())
-            ->whereNotIn('expiry_date', $expiringDates)
-            ->update(['status_id' => $activeStatus->id]);
 
         $this->info('Expiry notifications and status updates completed.');
     }

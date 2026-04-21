@@ -200,6 +200,371 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Branches",
+					"item": [
+						{
+							"name": "List Branches",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/branches",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "branches"]
+								}
+							}
+						},
+						{
+							"name": "Create Branch",
+							"request": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Main Branch\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/branches",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "branches"]
+								}
+							}
+						},
+						{
+							"name": "Get Branch Details",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/branches/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "branches", "1"]
+								}
+							}
+						},
+						{
+							"name": "Update Branch",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Updated Branch Name\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/branches/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "branches", "1"]
+								}
+							}
+						},
+						{
+							"name": "Delete Branch",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/branches/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "branches", "1"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Managers",
+					"item": [
+						{
+							"name": "List Managers",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/managers",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "managers"]
+								}
+							}
+						},
+						{
+							"name": "Create Manager",
+							"request": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Jane Manager\",\n    \"email\": \"jane@example.com\",\n    \"password\": \"password\",\n    \"phone_number\": \"9876543210\",\n    \"branch_id\": 1\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/managers",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "managers"]
+								}
+							}
+						},
+						{
+							"name": "Get Manager Details",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/managers/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "managers", "1"]
+								}
+							}
+						},
+						{
+							"name": "Update Manager",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Jane Updated\",\n    \"phone_number\": \"0123456789\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/managers/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "managers", "1"]
+								}
+							}
+						},
+						{
+							"name": "Delete Manager",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/managers/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "managers", "1"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Employees",
+					"item": [
+						{
+							"name": "List Employees",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/employees",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "employees"]
+								}
+							}
+						},
+						{
+							"name": "Create Employee",
+							"request": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Bob Employee\",\n    \"email\": \"bob@example.com\",\n    \"password\": \"password\",\n    \"phone_number\": \"5556667777\",\n    \"branch_id\": 1\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/employees",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "employees"]
+								}
+							}
+						},
+						{
+							"name": "Get Employee Details",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/employees/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "employees", "1"]
+								}
+							}
+						},
+						{
+							"name": "Update Employee",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Bob Updated\",\n    \"phone_number\": \"9998887777\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/employees/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "employees", "1"]
+								}
+							}
+						},
+						{
+							"name": "Delete Employee",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/employees/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "employees", "1"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Domains (Admin)",
+					"item": [
+						{
+							"name": "List All Domains",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/domains",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "domains"]
+								}
+							}
+						},
+						{
+							"name": "Create Domain (Admin)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"admin-domain.com\",\n    \"company_name\": \"Admin Corp\",\n    \"booking_date\": \"2024-01-01\",\n    \"expiry_date\": \"2025-01-01\",\n    \"sales_person_name\": \"Admin User\",\n    \"branch_id\": 1\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/domains",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "domains"]
+								}
+							}
+						},
+						{
+							"name": "Get Domain Details (Admin)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/domains/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "domains", "1"]
+								}
+							}
+						},
+						{
+							"name": "Update Domain (Admin)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"company_name\": \"Updated Admin Corp\",\n    \"status_id\": 1\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/domains/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "domains", "1"]
+								}
+							}
+						},
+						{
+							"name": "Delete Domain (Admin)",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/domains/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "domains", "1"]
+								}
+							}
+						}
+					]
+				}
+			]
 		}
 	],
 	"variable": [
