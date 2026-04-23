@@ -20,14 +20,24 @@ class Domain extends Model
     protected static function booted()
     {
         static::saving(function ($domain) {
+            // If the status is being manually updated, don't overwrite it
+            if ($domain->isDirty('status_id')) {
+                return;
+            }
+
             if ($domain->expiry_date) {
                 $expiry = \Carbon\Carbon::parse($domain->expiry_date)->startOfDay();
                 $now = \Carbon\Carbon::now()->startOfDay();
+                $diff = $now->diffInDays($expiry, false);
 
-                if ($expiry->isBefore($now)) {
-                    $statusName = 'Expire';
-                } elseif ($now->diffInDays($expiry, false) <= 30 && $now->diffInDays($expiry, false) >= 0) {
-                    $statusName = 'Expiring';
+                if ($diff < 0) {
+                    $statusName = 'Expired';
+                } elseif ($diff <= 7) {
+                    $statusName = 'Renewal in Progress';
+                } elseif ($diff <= 15) {
+                    $statusName = 'Pending Renewal';
+                } elseif ($diff <= 30) {
+                    $statusName = 'Expiring soon';
                 } else {
                     $statusName = 'Active';
                 }
@@ -48,5 +58,10 @@ class Domain extends Model
     public function status()
     {
         return $this->belongsTo(Status::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
     }
 }

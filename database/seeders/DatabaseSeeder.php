@@ -21,11 +21,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Status::create(['name' => 'Active']);
-        Status::create(['name' => 'Expiring']);
-        Status::create(['name' => 'Expire']);
+        Status::create(['name' => 'Expiring soon']);
+        Status::create(['name' => 'Expired']);
+        Status::create(['name' => 'Pending Renewal']);
+        Status::create(['name' => 'Renewal in Progress']);
+        Status::create(['name' => 'Renewed']);
+        Status::create(['name' => 'On Hold']);
+        Status::create(['name' => 'Cancelled']);        
 
         $this->call([
             BranchSeeder::class,
+            PaymentStatusSeeder::class,
         ]);
 
         User::create([

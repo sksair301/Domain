@@ -18,7 +18,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"New Employee\",\n    \"email\": \"newemp@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"role\": \"employee\",\n    \"branch_id\": 1\n}",
+							"raw": "{\n    \"name\": \"New Account\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"role\": \"employee\",\n    \"branch_id\": 1,\n    \"phone_number\": \"1234567890\"\n}",
 							"options": { "raw": { "language": "json" } }
 						},
 						"url": {
@@ -174,7 +174,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"company_name\": \"Google Cloud\",\n    \"status_id\": 1\n}",
+							"raw": "{\n    \"name\": \"updated-google.com\",\n    \"company_name\": \"Google Alphabet\",\n    \"booking_date\": \"2024-02-01\",\n    \"expiry_date\": \"2025-02-01\",\n    \"sales_person_name\": \"Jane Doe\",\n    \"status_id\": 7\n}",
 							"options": { "raw": { "language": "json" } }
 						},
 						"url": {
@@ -537,7 +537,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"company_name\": \"Updated Admin Corp\",\n    \"status_id\": 1\n}",
+									"raw": "{\n    \"name\": \"updated-admin-domain.com\",\n    \"company_name\": \"Updated Admin Corp\",\n    \"booking_date\": \"2024-02-01\",\n    \"expiry_date\": \"2025-02-01\",\n    \"sales_person_name\": \"Admin User Updated\",\n    \"status_id\": 8\n}",
 									"options": { "raw": { "language": "json" } }
 								},
 								"url": {
@@ -559,6 +559,81 @@
 									"raw": "{{base_url}}/admin/domains/1",
 									"host": ["{{base_url}}"],
 									"path": ["admin", "domains", "1"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Payments",
+					"item": [
+						{
+							"name": "List All Payments",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/payments",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "payments"]
+								}
+							}
+						},
+						{
+							"name": "Create Payment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"domain_id\": 1,\n    \"amount\": 250.00,\n    \"payment_date\": \"2024-05-15\",\n    \"payment_status_id\": 3\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/payments",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "payments"]
+								}
+							}
+						},
+						{
+							"name": "Update Payment",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 300.00,\n    \"payment_status_id\": 3\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/admin/payments/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "payments", "1"]
+								}
+							}
+						},
+						{
+							"name": "Delete Payment",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/admin/payments/1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "payments", "1"]
 								}
 							}
 						}

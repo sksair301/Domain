@@ -17,19 +17,43 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|string|in:manager,employee',
+            'branch_id' => 'required|exists:branches,id',
+            'phone_number' => 'required|string|max:20',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
+            'branch_id' => $request->branch_id,
         ]);
+
+        if ($request->role === 'manager') {
+            \App\Models\Manager::create([
+                'user_id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone_number' => $request->phone_number,
+                'branch_id' => $request->branch_id,
+            ]);
+        } elseif ($request->role === 'employee') {
+            \App\Models\Employee::create([
+                'user_id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone_number' => $request->phone_number,
+                'branch_id' => $request->branch_id,
+            ]);
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
+            'role' => $user->role,
         ]);
     }
 
@@ -48,6 +72,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
+            'role' => $user->role,
         ]);
     }
 

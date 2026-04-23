@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('managers', \App\Http\Controllers\Admin\ManagerController::class);
         Route::apiResource('employees', \App\Http\Controllers\Admin\EmployeeController::class);
         Route::apiResource('domains', \App\Http\Controllers\Admin\DomainController::class);
+        Route::apiResource('payments', \App\Http\Controllers\Admin\PaymentController::class);
     });
 });
 
