@@ -15,6 +15,7 @@ class Domain extends Model
         'sales_person_name',
         'branch_id',
         'status_id',
+        'remark',
     ];
 
     protected static function booted()

@@ -29,6 +29,7 @@ class UpdateDomainRequest extends FormRequest
             'expiry_date' => 'sometimes|required|date|after_or_equal:booking_date',
             'sales_person_name' => 'sometimes|required|string|max:255',
             'status_id' => 'sometimes|nullable|exists:statuses,id',
+            'remark' => 'sometimes|nullable|string',
         ];
     }
 }
