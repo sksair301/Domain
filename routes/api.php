@@ -12,14 +12,14 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::apiResource('domains', DomainController::class);
-
-    // Admin Routes
+    
+    Route::post('/domains/bulk-update', [\App\Http\Controllers\Admin\DomainController::class, 'bulkUpdate']);
+    Route::apiResource('domains', \App\Http\Controllers\Admin\DomainController::class);
+    
+    // Admin Routes for managing data elements
     Route::middleware('admin')->prefix('admin')->group(function () {
         Route::apiResource('branches', \App\Http\Controllers\Admin\BranchController::class);
-        Route::apiResource('managers', \App\Http\Controllers\Admin\ManagerController::class);
-        Route::apiResource('employees', \App\Http\Controllers\Admin\EmployeeController::class);
-        Route::apiResource('domains', \App\Http\Controllers\Admin\DomainController::class);
+        Route::apiResource('users', \App\Http\Controllers\UserController::class);
         Route::apiResource('payments', \App\Http\Controllers\Admin\PaymentController::class);
     });
 });

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schedule;
 // - Sends email alerts to branch managers & employees for domains
 //   expiring in exactly 30, 15, or 7 days.
 Schedule::command('app:notify-domain-expiry')->dailyAt('08:00');
+Schedule::command('app:send-domain-reminders')->dailyAt('09:00');
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
