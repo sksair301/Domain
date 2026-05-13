@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "067f8727-51a8-44e6-be13-b222e2e41c58",
-		"name": "Domain API (v3 - Refactored)",
-		"description": "API collection for Domain Management.\n\n### Base URL\n`http://127.0.0.1:8002/api`\n\n### Roles:\n- **Superadmin**: admin@example.com / password\n- **Manager**: manager@example.com / password\n- **Employee**: employee@example.com / password",
+		"name": "Domain API (v2 - Refactored)",
+		"description": "API collection for Domain Management.\n\n### Base URL\n`http://127.0.0.1:8002/api`\n\n### Roles:\n- **Superadmin**: admin@example.com / password\n- **Manager**: manager@example.com / password\n- **Employee**: employee@example.com / password\n\n### Domain Response Fields:\n- `system_status` — Auto-calculated from expiry_date (Active, Expiring soon, Pending Renewal, Renewal in Progress, Expired)\n- `manual_status` — Manually set by user (e.g., On Hold, Cancelled)\n- `days_to_expiry` — Integer, negative if expired\n- `priority` — Critical / High / Medium / Low\n- `payment_summary` — `{ total_amount, total_paid, balance_pending }`\n- `sales_person` — Full user object\n- `branch` — Full branch object\n- `renewed_by` — Full user object",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -63,47 +63,100 @@
 			]
 		},
 		{
-			"name": "Admin",
+			"name": "Domains",
 			"item": [
 				{
-					"name": "Domains",
-					"item": [
-						{
-							"name": "List Domains",
-							"request": {
-								"method": "GET",
-								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
-								"url": { "raw": "{{base_url}}/admin/domains", "host": ["{{base_url}}"], "path": ["admin", "domains"] }
-							}
-						},
-						{
-							"name": "Create Domain",
-							"request": {
-								"method": "POST",
-								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"google.com\",\n    \"company_name\": \"Alphabet Inc.\",\n    \"booking_date\": \"2025-01-01\",\n    \"expiry_date\": \"2026-01-01\",\n    \"total_amount\": 5000.00,\n    \"sales_person_id\": 2,\n    \"branch_id\": 1\n}",
-									"options": { "raw": { "language": "json" } }
-								},
-								"url": { "raw": "{{base_url}}/admin/domains", "host": ["{{base_url}}"], "path": ["admin", "domains"] }
-							}
-						},
-						{
-							"name": "Bulk Update Domains",
-							"request": {
-								"method": "POST",
-								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"domain_ids\": [1, 2],\n    \"manual_status\": \"On Hold\"\n}",
-									"options": { "raw": { "language": "json" } }
-								},
-								"url": { "raw": "{{base_url}}/admin/domains/bulk-update", "host": ["{{base_url}}"], "path": ["admin", "domains", "bulk-update"] }
-							}
+					"name": "List Domains (with filters + pagination)",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": {
+							"raw": "{{base_url}}/domains?search=google&system_status=Active&branch_id=1&per_page=10&page=1",
+							"host": ["{{base_url}}"],
+							"path": ["domains"],
+							"query": [
+								{ "key": "search", "value": "google", "description": "Search by domain name or company name" },
+								{ "key": "system_status", "value": "Active", "description": "Active | Expiring soon | Pending Renewal | Renewal in Progress | Expired" },
+								{ "key": "branch_id", "value": "1", "description": "Filter by branch" },
+								{ "key": "per_page", "value": "10", "description": "Results per page (default: 15)" },
+								{ "key": "page", "value": "1" }
+							]
 						}
-					]
+					}
 				},
+				{
+					"name": "Create Domain",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"google.com\",\n    \"company_name\": \"Alphabet Inc.\",\n    \"booking_date\": \"2025-01-01\",\n    \"expiry_date\": \"2026-01-01\",\n    \"total_amount\": 5000.00,\n    \"sales_person_id\": 2,\n    \"branch_id\": 1,\n    \"manual_status\": null,\n    \"last_contacted_at\": \"2025-04-20T10:00:00\",\n    \"next_followup_at\": \"2025-05-01T10:00:00\",\n    \"renewal_date\": null,\n    \"renewed_by\": null,\n    \"remark\": \"Initial purchase\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/domains", "host": ["{{base_url}}"], "path": ["domains"] }
+					}
+				},
+				{
+					"name": "Get Domain",
+					"request": {
+						"method": "GET",
+						"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": { "raw": "{{base_url}}/domains/1", "host": ["{{base_url}}"], "path": ["domains", "1"] }
+					}
+				},
+				{
+					"name": "Update Domain",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"updated-google.com\",\n    \"company_name\": \"Google LLC\",\n    \"expiry_date\": \"2027-01-01\",\n    \"total_amount\": 6000.00,\n    \"sales_person_id\": 2,\n    \"manual_status\": \"On Hold\",\n    \"last_contacted_at\": \"2025-04-24T09:00:00\",\n    \"next_followup_at\": \"2025-05-10T09:00:00\",\n    \"renewal_date\": \"2025-04-24\",\n    \"renewed_by\": 1,\n    \"remark\": \"Renewed for 2027\",\n    \"override_payment_check\": false\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/domains/1", "host": ["{{base_url}}"], "path": ["domains", "1"] }
+					}
+				},
+				{
+					"name": "Update Domain (Force Renewal - Override Payment)",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"expiry_date\": \"2027-06-01\",\n    \"override_payment_check\": true\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/domains/1", "host": ["{{base_url}}"], "path": ["domains", "1"] }
+					}
+				},
+				{
+					"name": "Delete Domain",
+					"request": {
+						"method": "DELETE",
+						"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+						"url": { "raw": "{{base_url}}/domains/1", "host": ["{{base_url}}"], "path": ["domains", "1"] }
+					}
+				},
+				{
+					"name": "Bulk Update Domains",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"domain_ids\": [1, 2, 3],\n    \"sales_person_id\": 2,\n    \"manual_status\": \"On Hold\",\n    \"next_followup_at\": \"2025-06-01T00:00:00\",\n    \"remark\": \"Bulk update for Q2 review\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{base_url}}/domains/bulk-update", "host": ["{{base_url}}"], "path": ["domains", "bulk-update"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
 				{
 					"name": "Branches",
 					"item": [
@@ -114,11 +167,45 @@
 								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
 								"url": { "raw": "{{base_url}}/admin/branches", "host": ["{{base_url}}"], "path": ["admin", "branches"] }
 							}
+						},
+						{
+							"name": "Create Branch",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"body": { "mode": "raw", "raw": "{\n    \"name\": \"Mumbai Branch\"\n}", "options": { "raw": { "language": "json" } } },
+								"url": { "raw": "{{base_url}}/admin/branches", "host": ["{{base_url}}"], "path": ["admin", "branches"] }
+							}
+						},
+						{
+							"name": "Get Branch",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"url": { "raw": "{{base_url}}/admin/branches/1", "host": ["{{base_url}}"], "path": ["admin", "branches", "1"] }
+							}
+						},
+						{
+							"name": "Update Branch",
+							"request": {
+								"method": "PUT",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"body": { "mode": "raw", "raw": "{\n    \"name\": \"Updated Branch Name\"\n}", "options": { "raw": { "language": "json" } } },
+								"url": { "raw": "{{base_url}}/admin/branches/1", "host": ["{{base_url}}"], "path": ["admin", "branches", "1"] }
+							}
+						},
+						{
+							"name": "Delete Branch",
+							"request": {
+								"method": "DELETE",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"url": { "raw": "{{base_url}}/admin/branches/1", "host": ["{{base_url}}"], "path": ["admin", "branches", "1"] }
+							}
 						}
 					]
 				},
 				{
-					"name": "Users",
+					"name": "Users (Merged Managers + Employees)",
 					"item": [
 						{
 							"name": "List All Users",
@@ -126,6 +213,87 @@
 								"method": "GET",
 								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
 								"url": { "raw": "{{base_url}}/admin/users", "host": ["{{base_url}}"], "path": ["admin", "users"] }
+							}
+						},
+						{
+							"name": "List Managers Only",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"url": {
+									"raw": "{{base_url}}/admin/users?role=manager",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "users"],
+									"query": [{ "key": "role", "value": "manager" }]
+								}
+							}
+						},
+						{
+							"name": "List Employees Only",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"url": {
+									"raw": "{{base_url}}/admin/users?role=employee",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "users"],
+									"query": [{ "key": "role", "value": "employee" }]
+								}
+							}
+						},
+						{
+							"name": "List Users by Branch",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"url": {
+									"raw": "{{base_url}}/admin/users?branch_id=1",
+									"host": ["{{base_url}}"],
+									"path": ["admin", "users"],
+									"query": [{ "key": "branch_id", "value": "1" }]
+								}
+							}
+						},
+						{
+							"name": "Create User",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Jane Manager\",\n    \"email\": \"jane@example.com\",\n    \"password\": \"password\",\n    \"role\": \"manager\",\n    \"branch_id\": 1\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/users", "host": ["{{base_url}}"], "path": ["admin", "users"] }
+							}
+						},
+						{
+							"name": "Get User",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"url": { "raw": "{{base_url}}/admin/users/1", "host": ["{{base_url}}"], "path": ["admin", "users", "1"] }
+							}
+						},
+						{
+							"name": "Update User",
+							"request": {
+								"method": "PUT",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Jane Updated\",\n    \"role\": \"employee\",\n    \"branch_id\": 1\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/users/1", "host": ["{{base_url}}"], "path": ["admin", "users", "1"] }
+							}
+						},
+						{
+							"name": "Delete User",
+							"request": {
+								"method": "DELETE",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"url": { "raw": "{{base_url}}/admin/users/1", "host": ["{{base_url}}"], "path": ["admin", "users", "1"] }
 							}
 						}
 					]
@@ -140,21 +308,50 @@
 								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
 								"url": { "raw": "{{base_url}}/admin/payments", "host": ["{{base_url}}"], "path": ["admin", "payments"] }
 							}
+						},
+						{
+							"name": "Create Payment",
+							"request": {
+								"method": "POST",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"domain_id\": 1,\n    \"amount\": 2500.00,\n    \"payment_date\": \"2025-04-28\",\n    \"payment_status_id\": 3\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/payments", "host": ["{{base_url}}"], "path": ["admin", "payments"] }
+							}
+						},
+						{
+							"name": "Get Payment",
+							"request": {
+								"method": "GET",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"url": { "raw": "{{base_url}}/admin/payments/1", "host": ["{{base_url}}"], "path": ["admin", "payments", "1"] }
+							}
+						},
+						{
+							"name": "Update Payment",
+							"request": {
+								"method": "PUT",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"amount\": 3000.00,\n    \"payment_status_id\": 3\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": { "raw": "{{base_url}}/admin/payments/1", "host": ["{{base_url}}"], "path": ["admin", "payments", "1"] }
+							}
+						},
+						{
+							"name": "Delete Payment",
+							"request": {
+								"method": "DELETE",
+								"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
+								"url": { "raw": "{{base_url}}/admin/payments/1", "host": ["{{base_url}}"], "path": ["admin", "payments", "1"] }
+							}
 						}
 					]
-				}
-			]
-		},
-		{
-			"name": "Manager",
-			"item": [
-				{
-					"name": "List Users (Branch Scoped)",
-					"request": {
-						"method": "GET",
-						"header": [{ "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" }],
-						"url": { "raw": "{{base_url}}/manager/users", "host": ["{{base_url}}"], "path": ["manager", "users"] }
-					}
 				}
 			]
 		}

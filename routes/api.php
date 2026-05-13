@@ -2,13 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\AuthController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-*/
+use App\Http\Controllers\DomainController;
+
+use App\Http\Controllers\API\AuthController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -16,11 +13,15 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     
-    // Admin Routes
-    Route::middleware('admin')->prefix('admin')->group(base_path('routes/admin.php'));
-
-    // Manager Routes
-    Route::middleware('manager')->prefix('manager')->group(base_path('routes/manager.php'));
+    Route::post('/domains/bulk-update', [\App\Http\Controllers\Admin\DomainController::class, 'bulkUpdate']);
+    Route::apiResource('domains', \App\Http\Controllers\Admin\DomainController::class);
+    
+    // Admin Routes for managing data elements
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::apiResource('branches', \App\Http\Controllers\Admin\BranchController::class);
+        Route::apiResource('users', \App\Http\Controllers\UserController::class);
+        Route::apiResource('payments', \App\Http\Controllers\Admin\PaymentController::class);
+    });
 });
 
 Route::get('/user', function (Request $request) {
