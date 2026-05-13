@@ -18,6 +18,14 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'role' => $this->role,
+            'branch_id' => $this->branch_id,
+            'branch' => $this->whenLoaded('branch', function () {
+                return [
+                    'id' => $this->branch->id,
+                    'name' => $this->branch->name,
+                ];
+            }),
         ];
     }
 }
