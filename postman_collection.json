@@ -354,6 +354,31 @@
 					]
 				}
 			]
+		},
+		{
+			"name": "Manager",
+			"item": [
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "List Branch Users",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/manager/users",
+									"host": ["{{base_url}}"],
+									"path": ["manager", "users"]
+								}
+							}
+						}
+					]
+				}
+			]
 		}
 	],
 	"variable": [

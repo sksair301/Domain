@@ -22,6 +22,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('users', \App\Http\Controllers\UserController::class);
         Route::apiResource('payments', \App\Http\Controllers\Admin\PaymentController::class);
     });
+
+    // Manager Routes
+    Route::middleware('manager')->prefix('manager')->group(function () {
+        Route::get('/users', [\App\Http\Controllers\Manager\UserController::class, 'index']);
+    });
 });
 
 Route::get('/user', function (Request $request) {
