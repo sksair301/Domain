@@ -26,6 +26,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Manager Routes
     Route::middleware('manager')->prefix('manager')->group(function () {
         Route::get('/users', [\App\Http\Controllers\Manager\UserController::class, 'index']);
+        Route::apiResource('domains', \App\Http\Controllers\Manager\DomainController::class)->only(['index', 'show', 'update']);
+    });
+
+    // Employee Routes
+    Route::middleware('employee')->prefix('employee')->group(function () {
+        Route::apiResource('domains', \App\Http\Controllers\Employee\DomainController::class)->only(['index', 'show', 'update']);
     });
 });
 

@@ -53,7 +53,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'role' => $user->role,
+            'user' => new \App\Http\Resources\UserResource($user->load('branch')),
         ]);
     }
 
@@ -66,13 +66,12 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request['email'])->firstOrFail();
-
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'role' => $user->role,
+            'user' => new \App\Http\Resources\UserResource($user->load('branch')),
         ]);
     }
 

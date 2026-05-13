@@ -377,6 +377,121 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "Domains",
+					"item": [
+						{
+							"name": "List Branch Domains",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/manager/domains",
+									"host": ["{{base_url}}"],
+									"path": ["manager", "domains"]
+								}
+							}
+						},
+						{
+							"name": "Get Branch Domain",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/manager/domains/1",
+									"host": ["{{base_url}}"],
+									"path": ["manager", "domains", "1"]
+								}
+							}
+						},
+						{
+							"name": "Update Branch Domain",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"manual_status\": \"On Hold\",\n    \"remark\": \"Updated by manager\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/manager/domains/1",
+									"host": ["{{base_url}}"],
+									"path": ["manager", "domains", "1"]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Employee",
+			"item": [
+				{
+					"name": "Domains",
+					"item": [
+						{
+							"name": "List My Domains",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/employee/domains",
+									"host": ["{{base_url}}"],
+									"path": ["employee", "domains"]
+								}
+							}
+						},
+						{
+							"name": "Get My Domain",
+							"request": {
+								"method": "GET",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"url": {
+									"raw": "{{base_url}}/employee/domains/1",
+									"host": ["{{base_url}}"],
+									"path": ["employee", "domains", "1"]
+								}
+							}
+						},
+						{
+							"name": "Update My Domain",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{ "key": "Accept", "value": "application/json" },
+									{ "key": "Authorization", "value": "Bearer {{token}}" }
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"manual_status\": \"On Hold\",\n    \"remark\": \"Updated by employee\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{base_url}}/employee/domains/1",
+									"host": ["{{base_url}}"],
+									"path": ["employee", "domains", "1"]
+								}
+							}
+						}
+					]
 				}
 			]
 		}
