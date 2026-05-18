@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use App\Models\Payment;
+use App\Models\Domain;
 use App\Http\Resources\PaymentResource;
 use Illuminate\Http\JsonResponse;
 
@@ -14,9 +14,12 @@ class PaymentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $payments = Payment::with(['domain', 'status'])->get();
+        $employee = $request->user();
+        $payments = Payment::whereHas('domain', function ($query) use ($employee) {
+            $query->where('sales_person_id', $employee->id);
+        })->with(['domain', 'status'])->get();
 
         return response()->json([
             'success' => true,
@@ -36,6 +39,14 @@ class PaymentController extends Controller
             'payment_status_id' => 'required|exists:payment_statuses,id',
         ]);
 
+        $domain = Domain::findOrFail($data['domain_id']);
+        if ($domain->sales_person_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. You can only add payments for domains you created.'
+            ], 403);
+        }
+
         $payment = Payment::create($data);
 
         return response()->json([
@@ -48,8 +59,16 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Payment $payment): JsonResponse
+    public function show(Request $request, Payment $payment): JsonResponse
     {
+        $payment->load('domain');
+        if ($payment->domain->sales_person_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. You can only access payments for domains you created.'
+            ], 403);
+        }
+
         return response()->json([
             'success' => true,
             'data' => new PaymentResource($payment->load(['domain', 'status']))
@@ -61,12 +80,30 @@ class PaymentController extends Controller
      */
     public function update(Request $request, Payment $payment): JsonResponse
     {
+        $payment->load('domain');
+        if ($payment->domain->sales_person_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. You can only modify payments for domains you created.'
+            ], 403);
+        }
+
         $data = $request->validate([
             'domain_id' => 'sometimes|required|exists:domains,id',
             'amount' => 'sometimes|required|numeric',
             'payment_date' => 'sometimes|required|date',
             'payment_status_id' => 'sometimes|required|exists:payment_statuses,id',
         ]);
+
+        if (isset($data['domain_id']) && $data['domain_id'] != $payment->domain_id) {
+            $newDomain = Domain::findOrFail($data['domain_id']);
+            if ($newDomain->sales_person_id !== $request->user()->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized. The new domain must also belong to you.'
+                ], 403);
+            }
+        }
 
         $payment->update($data);
 
@@ -80,8 +117,16 @@ class PaymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Payment $payment): JsonResponse
+    public function destroy(Request $request, Payment $payment): JsonResponse
     {
+        $payment->load('domain');
+        if ($payment->domain->sales_person_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. You can only delete payments for domains you created.'
+            ], 403);
+        }
+
         $payment->delete();
 
         return response()->json([

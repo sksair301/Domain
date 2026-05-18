@@ -33,8 +33,6 @@ class DomainResource extends JsonResource
             'payment_summary' => $this->payment_summary,
             'days_to_expiry' => $this->days_to_expiry,
             'priority' => $this->priority,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

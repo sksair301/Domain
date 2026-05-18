@@ -27,11 +27,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('manager')->prefix('manager')->group(function () {
         Route::get('/users', [\App\Http\Controllers\Manager\UserController::class, 'index']);
         Route::apiResource('domains', \App\Http\Controllers\Manager\DomainController::class)->only(['index', 'show', 'update']);
+        Route::apiResource('payments', \App\Http\Controllers\Manager\PaymentController::class);
     });
 
     // Employee Routes
     Route::middleware('employee')->prefix('employee')->group(function () {
         Route::apiResource('domains', \App\Http\Controllers\Employee\DomainController::class)->only(['index', 'show', 'update']);
+        Route::apiResource('payments', \App\Http\Controllers\Employee\PaymentController::class);
     });
 });
 
