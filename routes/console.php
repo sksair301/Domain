@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Schedule;
 //   expiring in exactly 30, 15, or 7 days.
 Schedule::command('app:notify-domain-expiry')->dailyAt('08:00');
 Schedule::command('app:send-domain-reminders')->dailyAt('09:00');
+Schedule::command('app:send-domain-expiry-notifications')->dailyAt('08:30');
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());

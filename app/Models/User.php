@@ -57,6 +57,31 @@ class User extends Authenticatable
         return $this->role === 'employee';
     }
 
+    public static function getAdminEmails()
+    {
+        $emails = self::where('role', 'superadmin')->pluck('email')->toArray();
+        $envEmails = config('mail.admin_emails', '');
+        $hardcoded = $envEmails ? array_map('trim', explode(',', $envEmails)) : [];
+        return array_unique(array_merge($emails, $hardcoded));
+    }
+
+    public static function getManagerEmailsByBranch($branchId)
+    {
+        if (!$branchId) return [];
+        return self::where('role', 'manager')
+                   ->where('branch_id', $branchId)
+                   ->pluck('email')
+                   ->toArray();
+    }
+
+    public static function getEmployeeEmailById($employeeId)
+    {
+        if (!$employeeId) return [];
+        $email = self::where('id', $employeeId)->value('email');
+        return $email ? [$email] : [];
+    }
+
+
     /**
      * The attributes that should be hidden for serialization.
      *

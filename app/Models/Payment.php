@@ -22,4 +22,25 @@ class Payment extends Model
     {
         return $this->belongsTo(PaymentStatus::class, 'payment_status_id');
     }
+
+    protected static function booted()
+    {
+        static::created(function ($payment) {
+            try {
+                $payment->load('domain');
+                $adminEmails = User::getAdminEmails();
+                $managerEmails = User::getManagerEmailsByBranch($payment->domain->branch_id ?? null);
+                $employeeEmails = User::getEmployeeEmailById($payment->domain->sales_person_id ?? null);
+
+                $emails = array_unique(array_merge($adminEmails, $managerEmails, $employeeEmails));
+
+                if (!empty($emails)) {
+                    \Illuminate\Support\Facades\Mail::to($emails)->send(new \App\Mail\PaymentAddedMail($payment));
+                    \Illuminate\Support\Facades\Log::info('PaymentAddedMail successfully sent to: ' . implode(', ', $emails));
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to send PaymentAddedMail: ' . $e->getMessage());
+            }
+        });
+    }
 }

@@ -115,4 +115,14 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Emails
+    |--------------------------------------------------------------------------
+    |
+    | Comma-separated list of hardcoded admin emails to receive notifications.
+    |
+    */
+    'admin_emails' => env('ADMIN_EMAILS', ''),
+
 ];

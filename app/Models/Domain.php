@@ -55,6 +55,21 @@ class Domain extends Model
                 'action'    => 'created',
                 'changes'   => $domain->toArray(),
             ]);
+
+            try {
+                $adminEmails = User::getAdminEmails();
+                $managerEmails = User::getManagerEmailsByBranch($domain->branch_id ?? null);
+                $employeeEmails = User::getEmployeeEmailById($domain->sales_person_id ?? null);
+
+                $emails = array_unique(array_merge($adminEmails, $managerEmails, $employeeEmails));
+
+                if (!empty($emails)) {
+                    \Illuminate\Support\Facades\Mail::to($emails)->send(new \App\Mail\DomainCreatedMail($domain));
+                    \Illuminate\Support\Facades\Log::info('DomainCreatedMail successfully sent to: ' . implode(', ', $emails));
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to send DomainCreatedMail: ' . $e->getMessage());
+            }
         });
 
         static::updated(function ($domain) {
