@@ -12,6 +12,11 @@ Schedule::command('app:notify-domain-expiry')->dailyAt('08:00');
 Schedule::command('app:send-domain-reminders')->dailyAt('09:00');
 Schedule::command('app:send-domain-expiry-notifications')->dailyAt('08:30');
 
+// Heartbeat to verify that the scheduler is running
+Schedule::call(function () {
+    \Illuminate\Support\Facades\Log::info('Scheduler heartbeat: The scheduler is running successfully.');
+})->everyMinute();
+
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
