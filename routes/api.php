@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('branches', \App\Http\Controllers\Admin\BranchController::class);
         Route::apiResource('users', \App\Http\Controllers\UserController::class);
         Route::apiResource('payments', \App\Http\Controllers\Admin\PaymentController::class);
+        Route::apiResource('purchase-invoices', \App\Http\Controllers\PurchaseInvoiceController::class);
     });
 
     // Manager Routes
@@ -28,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users', [\App\Http\Controllers\Manager\UserController::class, 'index']);
         Route::apiResource('domains', \App\Http\Controllers\Manager\DomainController::class)->only(['index', 'show', 'update']);
         Route::apiResource('payments', \App\Http\Controllers\Manager\PaymentController::class);
+        Route::apiResource('purchase-invoices', \App\Http\Controllers\PurchaseInvoiceController::class);
     });
 
     // Employee Routes
