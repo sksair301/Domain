@@ -89,7 +89,7 @@ class PurchaseInvoiceController extends Controller
         }
         return response()->json([
             'success' => true,
-            'data' => new PurchaseInvoiceResource($invoie)
+            'data' => new PurchaseInvoiceResource($invoice)
         ]);
     }
 
