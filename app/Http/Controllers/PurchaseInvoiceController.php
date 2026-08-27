@@ -49,7 +49,7 @@ class PurchaseInvoiceController extends Controller
         $data = $request->validate([
             'amount' => 'required|numeric',
             'payment_date' => 'required|date',
-            'status' => 'required|string|in:Pending,Completed / Paid,Processed by Accounts',
+            'status' => 'required|string|in:Pending,Completed,Processed',
             'invoice_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
             'company_name' => 'required|string',
         ]);
@@ -118,7 +118,7 @@ class PurchaseInvoiceController extends Controller
         $data = $request->validate([
             'amount' => 'sometimes|required|numeric',
             'payment_date' => 'sometimes|required|date',
-            'status' => 'sometimes|required|string|in:Pending,Completed / Paid,Processed by Accounts',
+            'status' => 'sometimes|required|string|in:Pending,Completed,Processed',
             'invoice_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png',
             'company_name' => 'sometimes|required|string',
         ]);
