@@ -160,7 +160,7 @@ class PurchaseInvoiceController extends Controller
         if ($invoice->invoice_file_path) {
             Storage::disk('public')->delete($invoice->invoice_file_path);
         }
-        $purchaseInvoice->delete();
+        $invoice->delete();
 
         return response()->json([
             'success' => true,
